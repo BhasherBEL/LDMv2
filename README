@@ -1,0 +1,33 @@
+--------------------------------------------- English ---------------------------------------------
+
+LDMv2: Local Data Mining version 2
+
+It is a script written in python3 that aims to extract as much data as possible from a computer.
+For example, from browsers, it extracts passwords, cookies, history,.....
+
+It is completely modular in design. That is, a user can write a module without having to understand
+the rest of the script. This new module will be automatically incorporated into the data recovery
+process. All its modules are located in the "modules" folder. There are also metamodules, which aim
+to simplify the writing of more precise modules. For example, there is a meta module for chromium
+under Linux, which will search for all user folders. A submodule, such as the one that retrieves
+cookies, will only have to use it.
+
+---------------------------------------------------------------------------------------------------
+
+-------------------------------------------- Français ---------------------------------------------
+
+LDMv2: Local Data Mining version 2
+
+Il s'agit d'un script écrit en python3 qui a pour objectif d'extraire un maximum de données d'un
+ordinateur. Par exemple, à partir des navigateurs, il extrait les mots de passe, les cookies,
+l'historique, ....
+
+Il est conçu de façon totalement modulaire. C'est à dire qu'un utilisateur peut très bien écrire
+un module sans avoir besoin de comprendre le reste du script. Ce nouveau module sera
+automatiquement incorporé à la récupération de données. L'ensemble de ses modules se trouvent dans
+le dossier "modules". Il existe aussi des métamodules, qui ont pour but de simplifier l'écriture
+de modules plus précis. Par exemple, il existe un métamodule pour chrome sous linux, qui va se
+charger de chercher tous les dossiers utilisateurs. Un sous module, tel que celui récuperant les
+cookies, n'aura plus qu'a se servir.
+
+---------------------------------------------------------------------------------------------------
