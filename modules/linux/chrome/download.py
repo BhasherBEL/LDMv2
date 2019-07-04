@@ -14,7 +14,7 @@ class ChromeDownload(ChromeModule):
 		ChromeModule.__init__(
 			self,
 			name='ChromeDownload',
-			version='0.1.0',
+			version='0.1.1',
 			file=__file__,
 			dependencies=['os', 'sqlite3'],
 		)
@@ -30,12 +30,16 @@ class ChromeDownload(ChromeModule):
 			return False
 
 		for profile in self.get_profiles():
-			history_path = profile + '/History'
-			if os.path.isfile(history_path):
+			download_path = profile + '/History'
+			if os.path.isfile(download_path):
 				self.log(profile.split('/')[-1] + ':')
-				connection = sqlite3.connect(history_path)
+				connection = sqlite3.connect(download_path)
 				cursor = connection.cursor()
-				cursor.execute('SELECT target_path, start_time, total_bytes, tab_url FROM downloads')
+				try:
+					cursor.execute('SELECT target_path, start_time, total_bytes, tab_url FROM downloads')
+				except sqlite3.OperationalError:
+					self.executenot(download_path + ' database is locked', 1)
+					return False
 
 				self.log('target_path,url,size,time')
 				for target_path, start_time, total_bytes, tab_url in cursor.fetchall():

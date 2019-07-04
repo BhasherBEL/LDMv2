@@ -35,7 +35,11 @@ class ChromeHistory(ChromeModule):
 				self.log(profile.split('/')[-1] + ':')
 				connection = sqlite3.connect(history_path)
 				cursor = connection.cursor()
-				cursor.execute('SELECT url, title, visit_count, last_visit_time FROM urls')
+				try:
+					cursor.execute('SELECT url, title, visit_count, last_visit_time FROM urls')
+				except sqlite3.OperationalError:
+					self.executenot(history_path + ' database is locked', 1)
+					return False
 
 				self.log('url,title,visit_count,last_visit_time')
 				for url, title, visit_count, last_visit_time in cursor.fetchall():

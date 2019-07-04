@@ -79,8 +79,11 @@ class Module:
 	def dependenciesnot(self, name):
 		self.log('Cannot execute ' + self.name + ' module. \'' + name + '\' cannot be imported.', 1)
 
-	def executenot(self):
-		self.log('Module ' + self.name + ' could not be correctly executed.', 1)
+	def executenot(self, text=None, verbose=1):
+		if text:
+			self.log(text, verbose=verbose)
+		else:
+			self.log('Module ' + self.name + ' could not be correctly executed.', verbose=verbose)
 
 	def log(self, text, verbose=1):
 		if verbose <= config.VERBOSE_LEVEL:
