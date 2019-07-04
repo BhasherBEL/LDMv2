@@ -1,8 +1,11 @@
 #!/usr/local/bin/python
 # coding: utf-8
 
-import os
-import json
+try:
+	import os
+	import json
+except ImportError:
+	pass
 
 from modules.linux.linux_module import LinuxModule
 
@@ -20,11 +23,11 @@ class ChromeModule(LinuxModule):
 			name=name,
 			version=version,
 			file=file,
-			dependencies=dependencies+['os', 'json'] if type(dependencies) == list else ['os', 'json'],
+			dependencies=dependencies+['os', 'json'] if dependencies else ['os', 'json'],
 		)
 
 	def can(self):
-		return super().can() and self.platform.system.lower() == 'linux'
+		return super().can()
 
 	def has(self):
 		return super().has() and self.get_profiles()

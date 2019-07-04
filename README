@@ -12,6 +12,10 @@ to simplify the writing of more precise modules. For example, there is a meta mo
 under Linux, which will search for all user folders. A submodule, such as the one that retrieves
 cookies, will only have to use it.
 
+It has been designed to be fully portable, and to work, even if all the required dependencies are
+not present. Each sub-module is executed only if all the dependencies required for its proper
+functioning are present.
+
 ---------------------------------------------------------------------------------------------------
 
 -------------------------------------------- Français ---------------------------------------------
@@ -29,5 +33,9 @@ le dossier "modules". Il existe aussi des métamodules, qui ont pour but de simp
 de modules plus précis. Par exemple, il existe un métamodule pour chrome sous linux, qui va se
 charger de chercher tous les dossiers utilisateurs. Un sous module, tel que celui récuperant les
 cookies, n'aura plus qu'a se servir.
+
+Il a été conçu dans le but d'être entièrement portable, et de fonctionner, même si l'ensemble des
+dépendences requis ne sont pas présent. Chaque sousmodule n'est executé que si toutes les
+dépendences requises pour le bon fonctionnement de celui-ci sont présent.
 
 ---------------------------------------------------------------------------------------------------

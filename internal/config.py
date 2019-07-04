@@ -5,6 +5,6 @@
 VERBOSE_LEVEL = 2
 
 # 0: CONSOLE, 1: FILE, 2: CONSOLE & FILE
-LOG_TYPE = 2
+LOG_TYPE = 1
 
 LOG_DIR = 'output'

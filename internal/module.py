@@ -7,6 +7,8 @@ import time
 
 from internal import platforms, config
 
+CURRENT_TIME = time.strftime('%Y%m%d-%H%M%S')
+
 
 class Module:
 	platform = platforms.Platform()
@@ -21,7 +23,7 @@ class Module:
 		self.file = file
 		self.logfile = os.path.abspath(file).replace(
 			os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
-			os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/' + config.LOG_DIR + '/' + time.strftime('%Y%m%d-%H%M%S'),
+			os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/' + config.LOG_DIR + '/' + CURRENT_TIME,
 		).replace('.py', '.txt')
 		if self.can():
 			dep_error = False
@@ -43,6 +45,8 @@ class Module:
 		else:
 			self.cannot()
 
+		if config.LOG_TYPE == 1:
+			print('done')
 		print('-'*(43+len(name)+len(version)))
 
 	def can(self) -> bool:
