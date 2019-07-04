@@ -15,8 +15,6 @@ class Module:
 	PYTHON_VERSION = [sys.version_info.major, sys.version_info.minor, sys.version_info.micro]
 
 	def __init__(self, name: str, version: str, file: str, dependencies: list = None):
-
-		print('-------------------- ' + name + ' ' + version + ' --------------------')
 		self.version = version
 		self.name = name
 		self.dependencies = dependencies
@@ -25,7 +23,10 @@ class Module:
 			os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
 			os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/' + config.LOG_DIR + '/' + CURRENT_TIME,
 		).replace('.py', '.txt')
-		if self.can():
+		can = self.can()
+		if can or config.VERBOSE_LEVEL == 2:
+			print('-------------------- ' + name + ' ' + version + ' --------------------')
+		if can:
 			dep_error = False
 			if dependencies:
 				for el in dependencies:
@@ -45,9 +46,10 @@ class Module:
 		else:
 			self.cannot()
 
-		if config.LOG_TYPE == 1:
-			print('done')
-		print('-'*(43+len(name)+len(version)))
+		if can or config.VERBOSE_LEVEL == 2:
+			if config.LOG_TYPE == 1:
+				print('done')
+			print('-' * (43 + len(name) + len(version)))
 
 	def can(self) -> bool:
 		"""

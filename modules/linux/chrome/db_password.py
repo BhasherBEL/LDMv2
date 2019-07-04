@@ -10,11 +10,11 @@ except ImportError:
 from modules.linux.chrome.chrome_module import ChromeModule
 
 
-class ChromeDbPassword(ChromeModule):
+class LinuxChromeDbPassword(ChromeModule):
 	def __init__(self):
 		ChromeModule.__init__(
 			self,
-			name='ChromeDbPassword',
+			name='LinuxChromeDbPassword',
 			version='0.1.0',
 			file=__file__,
 			dependencies=['os', 'sqlite3', 'urllib.parse'],

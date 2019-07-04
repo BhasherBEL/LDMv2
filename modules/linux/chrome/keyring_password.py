@@ -8,11 +8,11 @@ except ImportError:
 from modules.linux.chrome.chrome_module import ChromeModule
 
 
-class ChromeKeyringPassword(ChromeModule):
+class LinuxChromeKeyringPassword(ChromeModule):
 	def __init__(self):
 		ChromeModule.__init__(
 			self,
-			name='ChromeKeyringPassword',
+			name='LinuxChromeKeyringPassword',
 			version='0.1.0',
 			file=__file__,
 			dependencies=['keyring'],

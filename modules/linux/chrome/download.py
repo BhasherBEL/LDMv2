@@ -9,11 +9,11 @@ except ImportError:
 from modules.linux.chrome.chrome_module import ChromeModule
 
 
-class ChromeDownload(ChromeModule):
+class LinuxChromeDownload(ChromeModule):
 	def __init__(self):
 		ChromeModule.__init__(
 			self,
-			name='ChromeDownload',
+			name='LinuxChromeDownload',
 			version='0.1.1',
 			file=__file__,
 			dependencies=['os', 'sqlite3'],

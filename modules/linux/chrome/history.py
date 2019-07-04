@@ -9,11 +9,11 @@ except ImportError:
 from modules.linux.chrome.chrome_module import ChromeModule
 
 
-class ChromeHistory(ChromeModule):
+class LinuxChromeHistory(ChromeModule):
 	def __init__(self):
 		ChromeModule.__init__(
 			self,
-			name='ChromeHistory',
+			name='LinuxChromeHistory',
 			version='0.1.0',
 			file=__file__,
 			dependencies=['os', 'sqlite3'],

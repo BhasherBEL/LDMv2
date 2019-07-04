@@ -12,11 +12,11 @@ except ImportError:
 from modules.linux.chrome.chrome_module import ChromeModule
 
 
-class ChromeCookie(ChromeModule):
+class LinuxChromeCookie(ChromeModule):
 	def __init__(self):
 		ChromeModule.__init__(
 			self,
-			name='ChromeCookie',
+			name='LinuxChromeCookie',
 			version='0.1.1',
 			file=__file__,
 			dependencies=['os', 'sqlite3', 'Crypto', 'hashlib', 'secretstorage'],

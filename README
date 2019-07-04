@@ -52,3 +52,5 @@ dépendences requises pour le bon fonctionnement de celui-ci sont présent.
             > cookie.py
             > download.py
             > history.py
+            > db_password.py
+            > keyring_password.py
