@@ -96,4 +96,4 @@ class Module:
 					os.makedirs(os.path.dirname(self.logfile))
 
 				with open(self.logfile, 'a') as file:
-					file.write(text + '\n')
+					file.write((text + '\n').encode('utf-8'))
