@@ -13,6 +13,7 @@ CURRENT_TIME = time.strftime('%Y%m%d-%H%M%S')
 class Module:
 	platform = platforms.Platform()
 	PYTHON_VERSION = [sys.version_info.major, sys.version_info.minor, sys.version_info.micro]
+	enable = True
 
 	def __init__(self, name: str, version: str, file: str, dependencies: list = None):
 		self.version = version
@@ -23,33 +24,36 @@ class Module:
 			os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
 			os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/' + config.LOG_DIR + '/' + CURRENT_TIME,
 		).replace('.py', '.txt')
-		can = self.can()
-		if can or config.VERBOSE_LEVEL == 2:
-			print('-------------------- ' + name + ' ' + version + ' --------------------')
-		if can:
-			dep_error = False
-			if dependencies:
-				for el in dependencies:
-					try:
-						importlib.import_module(el)
-					except ImportError as e:
-						print(e)
-						dep_error = True
-						self.dependenciesnot(el)
-			if not dep_error:
-				if self.has():
-					if not self.execute():
-						self.executenot()
-				else:
-					self.hasnot()
 
-		else:
-			self.cannot()
+	def init(self):
+		if self.enable:
+			can = self.can()
+			if can or config.VERBOSE_LEVEL == 2:
+				print('-------------------- ' + self.name + ' ' + self.version + ' --------------------')
+			if can:
+				dep_error = False
+				if self.dependencies:
+					for el in self.dependencies:
+						try:
+							importlib.import_module(el)
+						except ImportError as e:
+							print(e)
+							dep_error = True
+							self.dependenciesnot(el)
+				if not dep_error:
+					if self.has():
+						if not self.execute():
+							self.executenot()
+					else:
+						self.hasnot()
 
-		if can or config.VERBOSE_LEVEL == 2:
-			if config.LOG_TYPE == 1:
-				print('done')
-			print('-' * (43 + len(name) + len(version)))
+			else:
+				self.cannot()
+
+			if can or config.VERBOSE_LEVEL == 2:
+				if config.LOG_TYPE == 1:
+					print('done')
+				print('-' * (43 + len(self.name) + len(self.version)))
 
 	def can(self) -> bool:
 		"""
@@ -95,5 +99,5 @@ class Module:
 				if not os.path.isdir(os.path.dirname(self.logfile)):
 					os.makedirs(os.path.dirname(self.logfile))
 
-				with open(self.logfile, 'a') as file:
-					file.write((text + '\n').encode('utf-8'))
+				with open(self.logfile, 'a', encoding='utf-8') as file:
+					file.write(text + '\n')

