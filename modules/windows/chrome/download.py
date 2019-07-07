@@ -26,9 +26,8 @@ class WindowsChromeDownload(ChromeModule):
 		for profile in self.get_profiles():
 			download_path = profile + '/History'
 			if os.path.isfile(download_path):
-				self.log(profile.split('/')[-1] + ':')
 				connection = sqlite3.connect(download_path)
 				cursor = connection.cursor()
-				self.cursor_get_and_log(cursor, 'target_path,tab_url,total_bytes,start_time', 'downloads')
+				self.cursor_get_and_log(cursor, 'target_path,tab_url,total_bytes,start_time', 'downloads', spe=os.path.split(profile)[1])
 
 		return True

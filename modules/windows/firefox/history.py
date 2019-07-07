@@ -24,7 +24,6 @@ class WindowsFirefoxHistory(FirefoxModule):
 		for profile in self.get_profiles():
 			history_path = os.path.join(profile, 'places.sqlite')
 			if os.path.isfile(history_path):
-				self.log(os.path.split(profile)[1] + ':')
 				connection = sqlite3.connect(history_path)
 				cursor = connection.cursor()
 
@@ -34,6 +33,6 @@ class WindowsFirefoxHistory(FirefoxModule):
 					self.executenot(history_path + ' database is locked', 1)
 					return False
 
-				self.standard_multiple_log(cursor.fetchall(), header='last_visit_time,url,title')
+				self.standard_multiple_log(cursor.fetchall(), header='last_visit_time,url,title', spe=os.path.split(profile)[1])
 		return True
 

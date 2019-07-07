@@ -29,6 +29,6 @@ class WindowsChromeCookie(ChromeModule):
 			if os.path.isfile(cookie_path):
 				connection = sqlite3.connect(cookie_path)
 				cursor = connection.cursor()
-				self.cursor_get_and_log(cursor, 'host_key,name,encrypted_value', 'cookies', decrypt_ids=[2])
+				self.cursor_get_and_log(cursor, 'host_key,name,encrypted_value', 'cookies', decrypt_ids=[2], spe=os.path.split(profile)[1])
 
 		return True

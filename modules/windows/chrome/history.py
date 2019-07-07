@@ -26,9 +26,8 @@ class WindowsChromeHistory(ChromeModule):
 		for profile in self.get_profiles():
 			history_path = profile + '/History'
 			if os.path.isfile(history_path):
-				self.log(profile.split('/')[-1] + ':')
 				connection = sqlite3.connect(history_path)
 				cursor = connection.cursor()
-				self.cursor_get_and_log(cursor, 'url,title,visit_count,last_visit_time', 'urls')
+				self.cursor_get_and_log(cursor, 'url,title,visit_count,last_visit_time', 'urls', spe=os.path.split(profile)[1])
 
 		return True

