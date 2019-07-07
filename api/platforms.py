@@ -18,6 +18,8 @@ class Platform:
 				self.dist_version_name = 'unknown'
 			elif self.system == 'Windows':
 				self.dist_version = platform.uname()[2]
+				self.dist_name = ''
+				self.dist_version_name = ''
 			else:
 				self.dist_name = platform.dist()[0]
 				self.dist_version = platform.dist()[1]
@@ -33,3 +35,6 @@ class Platform:
 				self.machine = 'x32'
 			else:
 				self.machine = 'unknown'
+
+
+current_platform = Platform()

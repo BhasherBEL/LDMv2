@@ -7,6 +7,7 @@ except ImportError:
 	pass
 
 from modules.windows.windows_module import WindowsModule
+from api import user
 
 
 CHROME_WINDOWS_NAMES = [
@@ -44,7 +45,7 @@ class ChromeModule(WindowsModule):
 			name=name,
 			version=version,
 			file=file,
-			dependencies=dependencies+['os', 'json'] if dependencies else ['os', 'json'],
+			dependencies=dependencies+['os', 'json'],
 		)
 
 	def has(self):
@@ -58,11 +59,14 @@ class ChromeModule(WindowsModule):
 		else:
 			PROFILES_CHECK = True
 			configs = []
-			for name in CHROME_WINDOWS_NAMES:
-				if os.environ.get('LOCALAPPDATA') is not None and os.path.isdir(os.environ.get('LOCALAPPDATA') + '\\' + name):
-					configs.append(os.environ.get('LOCALAPPDATA') + '\\' + name)
-				elif os.path.isdir('C:\\Users\\' + os.path.split(os.path.expanduser('~'))[-1] + '\\AppData\\Local\\' + name):
-					configs.append('C:\\Users\\' + os.path.split(os.path.expanduser('~'))[-1] + '\\AppData\\Local\\' + name)
+			if os.environ.get('LOCALAPPDATA'):
+				localdatas = os.environ.get('LOCALAPPDATA').replace(user.get_username(), '{user}')
+			else:
+				localdatas = 'C:\\Users\\{user}\\AppData\\Local'
+			for localdata in self.get_users_path_to(localdatas):
+				for name in CHROME_WINDOWS_NAMES:
+					if os.path.isdir(localdata + '\\' + name):
+						configs.append(localdata + '\\' + name)
 
 			for config in configs:
 				profiles_name = []

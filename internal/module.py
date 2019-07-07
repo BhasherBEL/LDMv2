@@ -15,7 +15,8 @@ try:
 except ImportError:
 	pass
 
-from internal import platforms, config
+from internal import config
+from api import platforms, requirement
 
 CURRENT_TIME = time.strftime('%Y%m%d-%H%M%S')
 
@@ -50,13 +51,9 @@ class Module:
 			if can:
 				dep_error = False
 				if self.dependencies:
-					for el in self.dependencies:
-						try:
-							importlib.import_module(el)
-						except ImportError as e:
-							self.log(e, verbose=1)
-							dep_error = True
-							self.dependenciesnot(el)
+					if not requirement.are_presents(self.dependencies):
+						dep_error = True
+						self.dependenciesnot(self.dependencies)
 				if not dep_error:
 					if self.has():
 						try:
@@ -104,7 +101,7 @@ class Module:
 		self.log('Cannot execute ' + self.name + ' module.', 2, write=write, forceprint=not write)
 
 	def dependenciesnot(self, name, write=False):
-		self.log('Cannot execute ' + self.name + ' module. \'' + name + '\' cannot be imported.', 1, write=write, forceprint=not write)
+		self.log('Cannot execute ' + self.name + ' module. \'' + ', '.join(name) + '\' cannot be imported.', 1, write=write, forceprint=not write)
 
 	def executenot(self, text=None, verbose=1, write=False):
 		if text:
