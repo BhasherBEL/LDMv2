@@ -15,16 +15,10 @@ class WindowsChromeSavedData(ChromeModule):
 		ChromeModule.__init__(
 			self,
 			name='WindowsChromeSavedData',
-			version='0.0.1',
+			version='0.1.0',
 			file=__file__,
 			dependencies=['os', 'sqlite3', 'win32crypt'],
 		)
-
-	def can(self):
-		return super().can()
-
-	def has(self):
-		return super().has()
 
 	def execute(self) -> bool:
 		if not super().execute():

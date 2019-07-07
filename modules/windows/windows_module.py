@@ -17,9 +17,3 @@ class WindowsModule(Module):
 
 	def can(self):
 		return super().can() and self.platform.system.lower() == 'windows'
-
-	def has(self):
-		return super().has()
-
-	def execute(self):
-		return super().execute()

@@ -19,12 +19,6 @@ class WindowsChromeHistory(ChromeModule):
 			dependencies=['os', 'sqlite3'],
 		)
 
-	def can(self):
-		return super().can()
-
-	def has(self):
-		return super().has()
-
 	def execute(self) -> bool:
 		if not super().execute():
 			return False

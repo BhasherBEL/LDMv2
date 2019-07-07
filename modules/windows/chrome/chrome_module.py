@@ -47,14 +47,8 @@ class ChromeModule(WindowsModule):
 			dependencies=dependencies+['os', 'json'] if dependencies else ['os', 'json'],
 		)
 
-	def can(self):
-		return super().can()
-
 	def has(self):
 		return super().has() and self.get_profiles()
-
-	def execute(self) -> bool:
-		return super().execute()
 
 	def get_profiles(self) -> list:
 		global PROFILES_CHECK, CHROME_WINDOWS_NAMES, PROFILES

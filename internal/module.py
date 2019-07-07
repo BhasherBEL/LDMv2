@@ -4,6 +4,7 @@ import sys
 import importlib
 import os
 import time
+import math
 
 from internal import platforms, config
 
@@ -29,7 +30,14 @@ class Module:
 		if self.enable:
 			can = self.can()
 			if can or config.VERBOSE_LEVEL == 2:
-				print('-------------------- ' + self.name + ' ' + self.version + ' --------------------')
+				self.log(('-'*(int(math.floor((60-len(self.name)-len(self.version))/2)))
+							 + ' ' +
+							self.name
+							+ ' ' +
+							self.version
+							 + ' '
+							+ '-'*(int(math.ceil((60-len(self.name)-len(self.version))/2)))
+						  ), 1, write=False, forceprint=True)
 			if can:
 				dep_error = False
 				if self.dependencies:
@@ -37,13 +45,19 @@ class Module:
 						try:
 							importlib.import_module(el)
 						except ImportError as e:
-							print(e)
+							self.log(e, verbose=1)
 							dep_error = True
 							self.dependenciesnot(el)
 				if not dep_error:
 					if self.has():
-						if not self.execute():
-							self.executenot()
+						try:
+							if not self.execute():
+								self.executenot()
+							else:
+								if config.VERBOSE_LEVEL == 0:
+									print(self.name) + ' executed'
+						except Exception as e:
+							self.log(e, verbose=1)
 					else:
 						self.hasnot()
 
@@ -51,9 +65,7 @@ class Module:
 				self.cannot()
 
 			if can or config.VERBOSE_LEVEL == 2:
-				if config.LOG_TYPE == 1:
-					print('done')
-				print('-' * (43 + len(self.name) + len(self.version)))
+				self.log('-' * 63, write=False, forceprint=True)
 
 	def can(self) -> bool:
 		"""
@@ -76,22 +88,22 @@ class Module:
 		"""
 		return True
 
-	def cannot(self):
-		self.log('Cannot load ' + self.name + ' module.', 2)
+	def cannot(self, write=False):
+		self.log('Cannot load ' + self.name + ' module.', 2, write=write, forceprint=not write)
 
-	def hasnot(self):
-		self.log('Cannot execute ' + self.name + ' module.', 2)
+	def hasnot(self, write=False):
+		self.log('Cannot execute ' + self.name + ' module.', 2, write=write, forceprint=not write)
 
-	def dependenciesnot(self, name):
-		self.log('Cannot execute ' + self.name + ' module. \'' + name + '\' cannot be imported.', 1)
+	def dependenciesnot(self, name, write=False):
+		self.log('Cannot execute ' + self.name + ' module. \'' + name + '\' cannot be imported.', 1, write=write, forceprint=not write)
 
-	def executenot(self, text=None, verbose=1):
+	def executenot(self, text=None, verbose=1, write=False):
 		if text:
-			self.log(text, verbose=verbose)
+			self.log(text, verbose=verbose, write=write, forceprint=not write)
 		else:
-			self.log('Module ' + self.name + ' could not be correctly executed.', verbose=verbose)
+			self.log('Module ' + self.name + ' could not be correctly executed.', verbose=verbose, write=write, forceprint=not write)
 
-	def cursor_get_and_log(self, cursor, elements, db_name):
+	def cursor_get_and_log(self, cursor, elements, db_name, decrypt_ids=None, write=True):
 		try:
 			cursor.execute(
 				'SELECT ' + elements + ' FROM ' + db_name)
@@ -99,16 +111,9 @@ class Module:
 			self.executenot(db_name + ' database is locked', 1)
 			return False
 
-		self.standard_multiple_log(cursor.fetchall(), header=elements)
+		self.standard_multiple_log(cursor.fetchall(), header=elements, decrypt_ids=decrypt_ids, write=write)
 
-	def standard_multiple_log(self, content, header=None, decrypt_ids=None):
-		if decrypt_ids:
-			try:
-				importlib.import_module('win32crypt')
-			except ImportError as e:
-				print(e)
-				self.dependenciesnot(el)
-				return
+	def standard_multiple_log(self, content, header=None, decrypt_ids=None, write=True):
 		if header and (content or config.VERBOSE_LEVEL == 2):
 			self.log(header)
 		for el in content:
@@ -118,13 +123,13 @@ class Module:
 					res += ',' + (win32crypt.CryptUnprotectData(el[i], None, None, None, 0)[1]).decode('utf-8')
 				else:
 					res += ',' + str(el[i])
-			self.log(res[1:])
+			self.log(res[1:], write=write, forceprint=not write)
 
-	def log(self, text, verbose=1):
+	def log(self, text, verbose=1, write=True, forceprint=False):
 		if verbose <= config.VERBOSE_LEVEL:
-			if config.LOG_TYPE == 0 or config.LOG_TYPE == 2:
+			if config.LOG_TYPE == 0 or config.LOG_TYPE == 2 or forceprint:
 				print(str(text))
-			if config.LOG_TYPE == 1 or config.LOG_TYPE == 2:
+			if (config.LOG_TYPE == 1 or config.LOG_TYPE == 2) and write:
 				if not os.path.isdir(os.path.dirname(self.logfile)):
 					os.makedirs(os.path.dirname(self.logfile))
 
