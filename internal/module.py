@@ -6,6 +6,15 @@ import os
 import time
 import math
 
+try:
+	import win32crypt
+except ImportError:
+	pass
+try:
+	import sqlite3
+except ImportError:
+	pass
+
 from internal import platforms, config
 
 CURRENT_TIME = time.strftime('%Y%m%d-%H%M%S')
@@ -57,7 +66,7 @@ class Module:
 								if config.VERBOSE_LEVEL == 0:
 									print(self.name) + ' executed'
 						except Exception as e:
-							self.log(e, verbose=1)
+							self.log('Error: ' + str(e), verbose=1)
 					else:
 						self.hasnot()
 

