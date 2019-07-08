@@ -3,6 +3,7 @@
 try:
 	import os
 	import json
+	import subprocess
 except ImportError:
 	pass
 
@@ -35,6 +36,7 @@ CHROME_WINDOWS_NAMES = [
 ]
 PROFILES = []
 PROFILES_CHECK = False
+EXECUTE_CHECK = False
 
 
 class ChromeModule(WindowsModule):
@@ -45,11 +47,24 @@ class ChromeModule(WindowsModule):
 			name=name,
 			version=version,
 			file=file,
-			dependencies=dependencies+['os', 'json'],
+			dependencies=dependencies+['os', 'json', 'subprocess'],
 		)
 
 	def has(self):
 		return super().has() and self.get_profiles()
+
+	def execute(self) -> bool:
+		global EXECUTE_CHECK
+
+		if not super().execute():
+			return False
+		if not EXECUTE_CHECK:
+			EXECUTE_CHECK = True
+			try:
+				subprocess.check_output(['taskkill', '/F', '/im', 'chrome.exe'])
+			except subprocess.CalledProcessError:
+				pass
+		return True
 
 	def get_profiles(self) -> list:
 		global PROFILES_CHECK, CHROME_WINDOWS_NAMES, PROFILES

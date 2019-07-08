@@ -63,7 +63,7 @@ class Module:
 								if config.VERBOSE_LEVEL == 0:
 									print(self.name) + ' executed'
 						except Exception as e:
-							self.log('Error: ' + str(e), verbose=1)
+							self.log(type(e).__name__ + ': ' + str(e), verbose=1)
 					else:
 						self.hasnot()
 
@@ -139,5 +139,5 @@ class Module:
 				if not os.path.isdir(os.path.dirname(self.logfile)):
 					os.makedirs(os.path.dirname(self.logfile))
 
-				with open(self.logfile + ('.' + spe if spe else '') + '.txt', 'a', encoding='utf-8') as file:
+				with open(self.logfile + ('.' + spe if spe else '') + '.csv', 'a', encoding='utf-8') as file:
 					file.write(str(text) + '\n')
