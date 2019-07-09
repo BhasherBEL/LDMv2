@@ -34,6 +34,7 @@ class Module:
 			os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
 			os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/' + config.LOG_DIR + '/' + CURRENT_TIME,
 		).replace('.py', '')
+		self.logs = {}
 
 	def init(self):
 		if self.enable:
@@ -61,6 +62,7 @@ class Module:
 							else:
 								if config.VERBOSE_LEVEL == 0:
 									print(self.name) + ' executed'
+								self.write()
 						except Exception as e:
 							self.log(type(e).__name__ + ': ' + str(e), verbose=1)
 					else:
@@ -132,14 +134,32 @@ class Module:
 					res += ',' + str(el[i])
 			self.log(res[1:], **other)
 
-	def log(self, text, verbose=1, spe=None, write=True, forceprint=False, sorted_value=None):
+	def log(self, text, verbose=1, spe=None, write=True, forceprint=False, sorted_value=None, end=True):
+		"""
+		Log text in a file or in the console
+		:param text: The text to print or write
+		:param verbose: The verbosity of the log data
+		:param spe: The additional value in file name
+		:param write: Define if data want to be write
+		:param forceprint: Define if the data want to be print although the internal.config.LOG_TYPE.
+		:param sorted_value: Define value with type
+		:param end: Define if the data close the line
+		:return: nothing
+		"""
 		sorted_data.add(sorted_data if sorted_value else text)
-		if verbose <= config.VERBOSE_LEVEL:
+		if verbose >= config.VERBOSE_LEVEL:
 			if config.LOG_TYPE == 0 or config.LOG_TYPE == 2 or forceprint:
 				print(str(text))
 			if (config.LOG_TYPE == 1 or config.LOG_TYPE == 2) and write:
-				if not os.path.isdir(os.path.dirname(self.logfile)):
-					os.makedirs(os.path.dirname(self.logfile))
+				filepath = self.logfile + ('.' + spe if spe else '') + '.csv'
+				if filepath in self.logs:
+					self.logs[filepath] += str(text) + ('\n' if end else '')
+				else:
+					self.logs[filepath] = str(text) + ('\n' if end else '')
 
-				with open(self.logfile + ('.' + spe if spe else '') + '.csv', 'a', encoding='utf-8') as file:
-					file.write(str(text) + '\n')
+	def write(self):
+		if self.logs and not os.path.isdir(os.path.dirname(self.logfile)):
+			os.makedirs(os.path.dirname(self.logfile))
+		for key, value in self.logs.items():
+			with open(key, 'a', encoding='utf-8') as file:
+				file.write(value)
