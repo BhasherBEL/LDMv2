@@ -4,7 +4,7 @@ from api import requirement
 class ApiModule:
 	def __init__(self, dependencies: list):
 		self.dependencies = dependencies
-		self.enable = True
+		self.enabled = True
 		if not requirement.are_presents(dependencies):
 			self.enable = False
 

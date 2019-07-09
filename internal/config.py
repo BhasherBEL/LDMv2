@@ -9,5 +9,4 @@ LOG_TYPE = 0
 
 LOG_DIR = 'output'
 
-PASSWORD_FOUNDS = 0
-DATA_FOUNDS = 0
+HTML = False

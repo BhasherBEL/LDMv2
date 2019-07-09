@@ -25,6 +25,7 @@ def main():
 	parser.add_argument('-l', '--logtype', help='change log type', type=int, choices=[0, 1, 2])
 	parser.add_argument('-o', '--output', help='change output dir', type=str)
 	parser.add_argument('-e', '--execute', nargs='*', help='set modules to execute')
+	parser.add_argument('--html', help='also generate an html file for data')
 	args = parser.parse_args()
 	if args.verbosity:
 		config.VERBOSE_LEVEL = args.verbosity
@@ -32,6 +33,8 @@ def main():
 		config.LOG_TYPE = args.logtype
 	if args.output:
 		config.LOG_DIR = args.output
+	if args.html:
+		config.HTML = True
 	if args.execute:
 		for mod in modlist.modules:
 			if mod.enable:

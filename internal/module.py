@@ -15,7 +15,7 @@ except ImportError:
 	pass
 
 from internal import config, sorted_data
-from api import platforms, requirement
+from api import platforms, requirement, csv_to_html
 
 CURRENT_TIME = time.strftime('%Y%m%d-%H%M%S')
 
@@ -62,7 +62,7 @@ class Module:
 							else:
 								if config.VERBOSE_LEVEL == 0:
 									print(self.name) + ' executed'
-								self.write()
+								self.write(config.HTML)
 						except Exception as e:
 							self.log(type(e).__name__ + ': ' + str(e), verbose=1)
 					else:
@@ -144,7 +144,7 @@ class Module:
 		:param forceprint: Define if the data want to be print although the internal.config.LOG_TYPE.
 		:param sorted_value: Define value with type
 		:param end: Define if the data close the line
-		:return: nothing
+		:return: Nothing
 		"""
 		sorted_data.add(sorted_data if sorted_value else text)
 		if verbose >= config.VERBOSE_LEVEL:
@@ -157,9 +157,11 @@ class Module:
 				else:
 					self.logs[filepath] = str(text) + ('\n' if end else '')
 
-	def write(self):
+	def write(self, html=False):
 		if self.logs and not os.path.isdir(os.path.dirname(self.logfile)):
 			os.makedirs(os.path.dirname(self.logfile))
 		for key, value in self.logs.items():
 			with open(key, 'a', encoding='utf-8') as file:
 				file.write(value)
+			if html:
+				csv_to_html.convert(key)
