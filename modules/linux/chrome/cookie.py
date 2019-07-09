@@ -17,7 +17,7 @@ class LinuxChromeCookie(ChromeModule):
 		ChromeModule.__init__(
 			self,
 			name='LinuxChromeCookie',
-			version='0.1.1',
+			version='0.1.2',
 			file=__file__,
 			dependencies=['os', 'sqlite3', 'Crypto', 'hashlib', 'secretstorage'],
 		)

