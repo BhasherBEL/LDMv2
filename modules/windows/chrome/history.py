@@ -8,6 +8,7 @@ except ImportError:
 
 from modules.windows.chrome.chrome_module import ChromeModule
 from internal import data_type
+from api.windows import format
 
 
 class WindowsChromeHistory(ChromeModule):
@@ -15,7 +16,7 @@ class WindowsChromeHistory(ChromeModule):
 		ChromeModule.__init__(
 			self,
 			name='WindowsChromeHistory',
-			version='0.1.0',
+			version='0.1.1',
 			file=__file__,
 			dependencies=['os', 'sqlite3'],
 		)
@@ -30,7 +31,7 @@ class WindowsChromeHistory(ChromeModule):
 				items=[
 					[data_type.Link, ('url', 'title')],
 					[data_type.Text, 'visit_count'],
-					[data_type.Time, 'last_visit_time'],
+					[data_type.Time, 'last_visit_time', format.chrome_time],
 				],
 				db='urls',
 				spe=os.path.split(profile)[1],

@@ -7,6 +7,7 @@ except ImportError:
 	pass
 
 from modules.windows.firefox.firefox_module import FirefoxModule
+from internal import data_type
 
 
 class WindowsFirefoxSavedData(FirefoxModule):
@@ -30,5 +31,16 @@ class WindowsFirefoxSavedData(FirefoxModule):
 				cursor = connection.cursor()
 
 				self.cursor_get_and_log(cursor, 'fieldname, value', 'moz_formhistory', spe=os.path.split(profile)[1])
+
+			self.cursor_getV2(
+				path=os.path.join(profile, 'formhistory.sqlite'),
+				items=[
+					[data_type.Text, 'fieldname'],
+					[data_type.Text, 'value'],
+				],
+				db='moz_formhistory',
+				header=['name', 'value'],
+				spe=os.path.split(profile)[1],
+			)
 
 		return True

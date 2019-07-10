@@ -5,6 +5,8 @@ except ImportError:
 	pass
 
 from modules.windows.firefox.firefox_module import FirefoxModule
+from internal import data_type
+from api.windows import format
 
 
 class WindowsFirefoxHistory(FirefoxModule):
@@ -22,17 +24,17 @@ class WindowsFirefoxHistory(FirefoxModule):
 			return False
 
 		for profile in self.get_profiles():
-			history_path = os.path.join(profile, 'places.sqlite')
-			if os.path.isfile(history_path):
-				connection = sqlite3.connect(history_path)
-				cursor = connection.cursor()
 
-				try:
-					cursor.execute('select last_visit_date, url, title from moz_historyvisits natural join moz_places')
-				except sqlite3.OperationalError:
-					self.executenot(history_path + ' database is locked', 1)
-					return False
+			self.cursor_getV2(
+				path=os.path.join(profile, 'places.sqlite'),
+				items=[
+					[data_type.Link, ('url', 'title')],
+					[data_type.Time, 'last_visit_date', format.firefox_time],
+				],
+				db='moz_historyvisits',
+				request_sup='natural join moz_places',
+				spe=os.path.split(profile)[1],
+			)
 
-				self.standard_multiple_log(cursor.fetchall(), header='last_visit_time,url,title', spe=os.path.split(profile)[1])
 		return True
 

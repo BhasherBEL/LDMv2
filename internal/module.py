@@ -134,22 +134,20 @@ class Module:
 				header = elements
 			self.logV2(sorted_output, header, *args, **kwargs)
 
-	@staticmethod
-	def sort_output(output, items):
+	def sort_output(self, output, items):
 		sorted_output = []
 
 		for out in output:
 			res = []
-			for i in range(len(out)):
+			for i in range(0, len(out)):
 				value = out[i]
 				ii = 0
 				vi = 0
-				if i > 0:
-					for item in items:
-						vi += len(item[1])
-						ii += 1
-						if vi >= i:
-							break
+				for item in items:
+					vi += len(item[1]) if isinstance(item[1], list) or isinstance(item[1], tuple) else 1
+					if i < vi:
+						break
+					ii += 1
 				if len(items[ii]) == 3 or (len(items[ii]) == 4 and vi-len(items[ii][1]) in items[ii][3]):
 					value = items[ii][2](value)
 				res.append(value)

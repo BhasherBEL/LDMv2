@@ -18,7 +18,7 @@ def find(obj):
 	global EMAILS, IPS, PHONES_NUMBERS, LINKS
 	EMAILS += [data_type.Email(e) for e in data_type.Email.find(obj) if e not in EMAILS]
 	IPS += [data_type.Ip(e) for e in data_type.Ip.find(obj) if e not in IPS]
-	PHONES_NUMBERS += [data_type.PhoneNumber(e[0], e[1]) for e in data_type.PhoneNumber.find(obj) if e not in PHONES_NUMBERS]
+	PHONES_NUMBERS += [data_type.PhoneNumber('+' + e[0] + ' ' + e[1]) for e in data_type.PhoneNumber.find(obj) if e not in PHONES_NUMBERS]
 	LINKS += [data_type.Link(e) for e in data_type.Link.find(obj) if e not in LINKS]
 
 

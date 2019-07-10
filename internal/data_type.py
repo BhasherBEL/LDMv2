@@ -124,8 +124,10 @@ class Address(ApiModule):
 class Time(ApiModule):
 	def __init__(self, timestamp):
 		ApiModule.__init__(self, dependencies=['datetime'])
+		if not timestamp:
+			timestamp = 0
 		self.timestamp = timestamp
-		self.date = datetime.datetime(1601, 1, 1) + datetime.timedelta(microseconds=timestamp)
+		self.date = datetime.datetime.fromtimestamp(timestamp)
 		sorted_data.TIMES.append(self)
 
 	def __str__(self):

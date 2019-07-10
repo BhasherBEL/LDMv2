@@ -8,6 +8,7 @@ except ImportError:
 
 from modules.windows.chrome.chrome_module import ChromeModule
 from internal import data_type
+from api.windows import format
 
 
 class WindowsChromeDownload(ChromeModule):
@@ -15,7 +16,7 @@ class WindowsChromeDownload(ChromeModule):
 		ChromeModule.__init__(
 			self,
 			name='WindowsChromeDownload',
-			version='0.1.0',
+			version='0.1.1',
 			file=__file__,
 			dependencies=['os', 'sqlite3'],
 		)
@@ -31,7 +32,7 @@ class WindowsChromeDownload(ChromeModule):
 				items=[
 					[data_type.File, ('target_path', 'total_bytes')],
 					[data_type.Link, 'tab_url'],
-					[data_type.Time, 'start_time'],
+					[data_type.Time, 'start_time', format.chrome_time],
 				],
 				db='downloads',
 				spe=os.path.split(profile)[1],

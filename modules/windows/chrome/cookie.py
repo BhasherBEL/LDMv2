@@ -8,7 +8,7 @@ except ImportError:
 	pass
 
 from modules.windows.chrome.chrome_module import ChromeModule
-from api.windows import passwords
+from api.windows import format
 from internal import data_type
 
 
@@ -17,7 +17,7 @@ class WindowsChromeCookie(ChromeModule):
 		ChromeModule.__init__(
 			self,
 			name='WindowsChromeCookie',
-			version='0.1.0',
+			version='0.1.1',
 			file=__file__,
 			dependencies=['os', 'sqlite3', 'win32crypt'],
 		)
@@ -33,7 +33,7 @@ class WindowsChromeCookie(ChromeModule):
 				items=[
 					[data_type.Link, 'host_key'],
 					[data_type.Text, 'name'],
-					[data_type.Text, 'encrypted_value', passwords.win32decrypt],
+					[data_type.Text, 'encrypted_value', format.win32decrypt],
 				],
 				header=['url', 'name', 'value'],
 				db='cookies',

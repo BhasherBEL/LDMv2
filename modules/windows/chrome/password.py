@@ -9,7 +9,7 @@ except ImportError:
 
 from modules.windows.chrome.chrome_module import ChromeModule
 from internal import data_type
-from api.windows import passwords
+from api.windows import format
 
 
 class WindowsChromePassword(ChromeModule):
@@ -17,7 +17,7 @@ class WindowsChromePassword(ChromeModule):
 		ChromeModule.__init__(
 			self,
 			name='WindowsChromePassword',
-			version='0.1.0',
+			version='0.1.1',
 			file=__file__,
 			dependencies=['os', 'sqlite3', 'win32crypt'],
 		)
@@ -31,9 +31,9 @@ class WindowsChromePassword(ChromeModule):
 			self.cursor_getV2(
 				path=profile + '/Login Data',
 				items=[
-					[data_type.Password, 'password_value', passwords.win32decrypt],
 					[data_type.Link, 'action_url'],
 					[data_type.Username, 'username_value'],
+					[data_type.Password, 'password_value', format.win32decrypt],
 				],
 				header=['password', 'url', 'username'],
 				db='logins',
