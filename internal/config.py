@@ -10,3 +10,5 @@ LOG_TYPE = 0
 LOG_DIR = 'output'
 
 HTML = False
+
+DEBUG = True

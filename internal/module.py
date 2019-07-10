@@ -20,6 +20,10 @@ from api import platforms, requirement, csv_to_html
 CURRENT_TIME = time.strftime('%Y%m%d-%H%M%S')
 
 
+class EmptyException(Exception):
+	pass
+
+
 class Module:
 	platform = platforms.Platform()
 	PYTHON_VERSION = [sys.version_info.major, sys.version_info.minor, sys.version_info.micro]
@@ -63,7 +67,7 @@ class Module:
 								if config.VERBOSE_LEVEL == 0:
 									print(self.name) + ' executed'
 								self.write(config.HTML)
-						except Exception as e:
+						except (EmptyException if config.DEBUG else Exception) as e:
 							self.log(type(e).__name__ + ': ' + str(e), verbose=1)
 					else:
 						self.hasnot()
@@ -110,11 +114,86 @@ class Module:
 		else:
 			self.log('Module ' + self.name + ' could not be correctly executed.', verbose=verbose, write=write, forceprint=not write)
 
+	def cursor_getV2(self, path, items, db, request_sup='', header=None, *args, **kwargs):
+		if os.path.isfile(path):
+			connection = sqlite3.connect(path)
+			cursor = connection.cursor()
+			elements = ','.join([item[1] if type(item[1]) == str else ','.join(item[1]) for item in items])
+
+			try:
+				cursor.execute(
+					'SELECT ' + elements + ' FROM ' + db + ' ' + request_sup)
+			except (EmptyException if config.DEBUG else sqlite3.OperationalError):
+				self.executenot(db + ' database is locked', 1)
+				return False
+
+			output = cursor.fetchall()
+			sorted_output = self.sort_output(output, items)
+
+			if not header:
+				header = elements
+			self.logV2(sorted_output, header, *args, **kwargs)
+
+	@staticmethod
+	def sort_output(output, items):
+		sorted_output = []
+
+		for out in output:
+			res = []
+			for i in range(len(out)):
+				value = out[i]
+				ii = 0
+				vi = 0
+				if i > 0:
+					for item in items:
+						vi += len(item[1])
+						ii += 1
+						if vi >= i:
+							break
+				if len(items[ii]) == 3 or (len(items[ii]) == 4 and vi-len(items[ii][1]) in items[ii][3]):
+					value = items[ii][2](value)
+				res.append(value)
+			sorted_res = []
+			i = 0
+			for item in items:
+				if not isinstance(item[1], list) and not isinstance(item[1], tuple):
+					item[1] = [item[1]]
+				sorted_res.append(item[0](*res[i:i + len(item[1])]))
+				i += len(item[1])
+			sorted_output.append(sorted_res)
+		return sorted_output
+
+	def logV2(self, sorteds, header=None, verbose=1, spe=None, write=True, forceprint=False):
+		"""
+		Log text in a file or in the console
+		:param sorteds: Table of table of sorted_value (basically generate by sort_output)
+		:param header: header of log data
+		:param verbose: The verbosity of the log data
+		:param spe: The additional value in file name
+		:param write: Define if data want to be write (force)
+		:param forceprint: Define if the data want to be print although the internal.config.LOG_TYPE (force)
+		:return: Nothing
+		"""
+		if verbose >= config.VERBOSE_LEVEL:
+			if config.LOG_TYPE == 0 or config.LOG_TYPE == 2 or forceprint:
+				if header:
+					print(','.join(header) if isinstance(header, list) or isinstance(header, tuple) else str(header))
+				print('\n'.join([','.join([str(ssub) for ssub in sub]) for sub in sorteds]))
+			if (config.LOG_TYPE == 1 or config.LOG_TYPE == 2) and write:
+				filepath:str = self.logfile + ('.' + spe if spe else '')
+				if not filepath.endswith('.csv'):
+					filepath += '.csv'
+				if filepath not in self.logs:
+					self.logs[filepath] = ''
+				if header:
+					self.logs[filepath] += (','.join(header) if isinstance(header, list) or isinstance(header, tuple) else str(header)) + '\n'
+				self.logs[filepath] += '\n'.join([','.join([str(ssub) for ssub in sub]) for sub in sorteds]) + '\n'
+
 	def cursor_get_and_log(self, cursor, elements, db_name, decrypt_ids=None, decrypt_algo=None, **other):
 		try:
 			cursor.execute(
 				'SELECT ' + elements + ' FROM ' + db_name)
-		except sqlite3.OperationalError:
+		except (EmptyException if config.DEBUG else sqlite3.OperationalError):
 			self.executenot(db_name + ' database is locked', 1)
 			return False
 
@@ -146,7 +225,6 @@ class Module:
 		:param end: Define if the data close the line
 		:return: Nothing
 		"""
-		sorted_data.add(sorted_data if sorted_value else text)
 		if verbose >= config.VERBOSE_LEVEL:
 			if config.LOG_TYPE == 0 or config.LOG_TYPE == 2 or forceprint:
 				print(str(text))

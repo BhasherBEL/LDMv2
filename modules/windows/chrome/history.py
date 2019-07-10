@@ -7,6 +7,7 @@ except ImportError:
 	pass
 
 from modules.windows.chrome.chrome_module import ChromeModule
+from internal import data_type
 
 
 class WindowsChromeHistory(ChromeModule):
@@ -24,10 +25,15 @@ class WindowsChromeHistory(ChromeModule):
 			return False
 
 		for profile in self.get_profiles():
-			history_path = profile + '/History'
-			if os.path.isfile(history_path):
-				connection = sqlite3.connect(history_path)
-				cursor = connection.cursor()
-				self.cursor_get_and_log(cursor, 'url,title,visit_count,last_visit_time', 'urls', spe=os.path.split(profile)[1])
+			self.cursor_getV2(
+				path=profile + '/History',
+				items=[
+					[data_type.Link, ('url', 'title')],
+					[data_type.Text, 'visit_count'],
+					[data_type.Time, 'last_visit_time'],
+				],
+				db='urls',
+				spe=os.path.split(profile)[1],
+			)
 
 		return True

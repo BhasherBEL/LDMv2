@@ -8,6 +8,8 @@ except ImportError:
 	pass
 
 from modules.windows.chrome.chrome_module import ChromeModule
+from api.windows import passwords
+from internal import data_type
 
 
 class WindowsChromeCookie(ChromeModule):
@@ -25,10 +27,17 @@ class WindowsChromeCookie(ChromeModule):
 			return False
 
 		for profile in self.get_profiles():
-			cookie_path = profile + '\\Cookies'
-			if os.path.isfile(cookie_path):
-				connection = sqlite3.connect(cookie_path)
-				cursor = connection.cursor()
-				self.cursor_get_and_log(cursor, 'host_key,name,encrypted_value', 'cookies', decrypt_ids=[2], spe=os.path.split(profile)[1])
+
+			self.cursor_getV2(
+				path=profile + '/Cookies',
+				items=[
+					[data_type.Link, 'host_key'],
+					[data_type.Text, 'name'],
+					[data_type.Text, 'encrypted_value', passwords.win32decrypt],
+				],
+				header=['url', 'name', 'value'],
+				db='cookies',
+				spe=os.path.split(profile)[1],
+			)
 
 		return True

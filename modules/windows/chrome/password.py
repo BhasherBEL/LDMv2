@@ -8,6 +8,8 @@ except ImportError:
 	pass
 
 from modules.windows.chrome.chrome_module import ChromeModule
+from internal import data_type
+from api.windows import passwords
 
 
 class WindowsChromePassword(ChromeModule):
@@ -25,10 +27,17 @@ class WindowsChromePassword(ChromeModule):
 			return False
 
 		for profile in self.get_profiles():
-			password_path = profile + '\\Login Data'
-			if os.path.isfile(password_path):
-				connection = sqlite3.connect(password_path)
-				cursor = connection.cursor()
-				self.cursor_get_and_log(cursor, 'action_url, username_value, password_value', 'logins', decrypt_ids=[2], spe=os.path.split(profile)[1])
+
+			self.cursor_getV2(
+				path=profile + '/Login Data',
+				items=[
+					[data_type.Password, 'password_value', passwords.win32decrypt],
+					[data_type.Link, 'action_url'],
+					[data_type.Username, 'username_value'],
+				],
+				header=['password', 'url', 'username'],
+				db='logins',
+				spe=os.path.split(profile)[1],
+			)
 
 		return True

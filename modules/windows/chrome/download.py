@@ -7,6 +7,7 @@ except ImportError:
 	pass
 
 from modules.windows.chrome.chrome_module import ChromeModule
+from internal import data_type
 
 
 class WindowsChromeDownload(ChromeModule):
@@ -24,10 +25,16 @@ class WindowsChromeDownload(ChromeModule):
 			return False
 
 		for profile in self.get_profiles():
-			download_path = profile + '/History'
-			if os.path.isfile(download_path):
-				connection = sqlite3.connect(download_path)
-				cursor = connection.cursor()
-				self.cursor_get_and_log(cursor, 'target_path,tab_url,total_bytes,start_time', 'downloads', spe=os.path.split(profile)[1])
+
+			self.cursor_getV2(
+				path=profile + '/History',
+				items=[
+					[data_type.File, ('target_path', 'total_bytes')],
+					[data_type.Link, 'tab_url'],
+					[data_type.Time, 'start_time'],
+				],
+				db='downloads',
+				spe=os.path.split(profile)[1],
+			)
 
 		return True
