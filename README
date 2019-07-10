@@ -35,7 +35,7 @@ charger de chercher tous les dossiers utilisateurs. Un sous module, tel que celu
 cookies, n'aura plus qu'a se servir.
 
 Il a été conçu dans le but d'être entièrement portable, et de fonctionner, même si l'ensemble des
-dépendences requis ne sont pas présent. Chaque sousmodule n'est executé que si toutes les
+dépendences requises ne sont pas présentes. Chaque sousmodule n'est executé que si toutes les
 dépendences requises pour le bon fonctionnement de celui-ci sont présent.
 
 ---------------------------------------------------------------------------------------------------

@@ -10,11 +10,11 @@ from modules.linux.chrome.db_password import LinuxChromeDbPassword
 from modules.linux.chrome.keyring_password import LinuxChromeKeyringPassword
 
 
-from modules.windows.chrome.password import WindowsChromePassword
-from modules.windows.chrome.history import WindowsChromeHistory
-from modules.windows.chrome.download import WindowsChromeDownload
-from modules.windows.chrome.cookie import WindowsChromeCookie
-from modules.windows.chrome.saved_data import WindowsChromeSavedData
+from modules.windows.chromium.password import WindowsChromiumPassword
+from modules.windows.chromium.history import WindowsChromiumHistory
+from modules.windows.chromium.download import WindowsChromiumDownload
+from modules.windows.chromium.cookie import WindowsChromiumCookie
+from modules.windows.chromium.saved_data import WindowsChromiumSavedData
 
 from modules.windows.firefox.password import WindowsFirefoxPassword
 from modules.windows.firefox.history import WindowsFirefoxHistory
@@ -31,11 +31,11 @@ modules = [
 		LinuxChromeDbPassword(),
 		LinuxChromeKeyringPassword(),
 
-		WindowsChromePassword(),
-		WindowsChromeHistory(),
-		WindowsChromeDownload(),
-		WindowsChromeCookie(),
-		WindowsChromeSavedData(),
+		WindowsChromiumPassword(),
+		WindowsChromiumHistory(),
+		WindowsChromiumDownload(),
+		WindowsChromiumCookie(),
+		WindowsChromiumSavedData(),
 
 		WindowsFirefoxPassword(),
 		WindowsFirefoxHistory(),

@@ -7,17 +7,17 @@ try:
 except ImportError:
 	pass
 
-from modules.windows.chrome.chrome_module import ChromeModule
+from modules.windows.chromium.chromium_module import ChromiumModule
 from api.windows import format
 from internal import data_type
 
 
-class WindowsChromeCookie(ChromeModule):
+class WindowsChromiumCookie(ChromiumModule):
 	def __init__(self):
-		ChromeModule.__init__(
+		ChromiumModule.__init__(
 			self,
-			name='WindowsChromeCookie',
-			version='0.1.1',
+			name='WindowsChromiumCookie',
+			version='0.1.2',
 			file=__file__,
 			dependencies=['os', 'sqlite3', 'win32crypt'],
 		)

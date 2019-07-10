@@ -1,6 +1,8 @@
 #!/usr/local/bin/python
 # coding: utf-8
 
+VERSION = '2.1.1'
+
 # 0: CRITICAL, 1: INFO, 2: DEBUG
 VERBOSE_LEVEL = 1
 

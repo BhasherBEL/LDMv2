@@ -10,7 +10,7 @@ except ImportError:
 from modules.linux.linux_module import LinuxModule
 
 
-CHROME_LINUX_NAMES = ['google-chrome', 'google-chrome-beta', 'google-chrome-unstable', 'chromium']
+CHROME_LINUX_NAMES = ['google-chromium', 'google-chromium-beta', 'google-chromium-unstable', 'chromium']
 PROFILES = []
 PROFILES_CHECK = False
 

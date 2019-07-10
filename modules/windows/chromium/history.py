@@ -6,17 +6,17 @@ try:
 except ImportError:
 	pass
 
-from modules.windows.chrome.chrome_module import ChromeModule
+from modules.windows.chromium.chromium_module import ChromiumModule
 from internal import data_type
 from api.windows import format
 
 
-class WindowsChromeHistory(ChromeModule):
+class WindowsChromiumHistory(ChromiumModule):
 	def __init__(self):
-		ChromeModule.__init__(
+		ChromiumModule.__init__(
 			self,
-			name='WindowsChromeHistory',
-			version='0.1.1',
+			name='WindowsChromiumHistory',
+			version='0.1.2',
 			file=__file__,
 			dependencies=['os', 'sqlite3'],
 		)

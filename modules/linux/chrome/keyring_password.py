@@ -31,7 +31,7 @@ class LinuxChromeKeyringPassword(ChromeModule):
 		results = []
 		for item in keyring.get_keyring().get_preferred_collection().get_all_items():
 			vals = item.get_attributes()
-			if 'application' in vals and 'chrome' in vals['application'].lower():
+			if 'application' in vals and 'chromium' in vals['application'].lower():
 				try:
 					url = vals['action_url'] if vals['action_url'] else item.get_label()
 					username = vals['username_value']
