@@ -56,7 +56,7 @@ _Supported software_
 
 _Contributing_
 --
-To contribute, see the [contributing file](contributing.md).
+To contribute, see the [contributing file](https://github.com/BhasherBEL/LDMv2/blob/master/CONTRIBUTING.md).
 
 You can also follow [this project tab](https://github.com/BhasherBEL/LDMv2/projects/1).
 
