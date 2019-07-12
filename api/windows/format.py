@@ -1,5 +1,6 @@
 try:
 	import win32crypt
+	import win32api
 	import datetime
 except ImportError:
 	pass
@@ -9,7 +10,11 @@ def win32decrypt(x):
 	"""
 	Decrypt data with win32decrypt module
 	"""
-	return win32crypt.CryptUnprotectData(x, None, None, None, 0)[1].decode('utf-8')
+	try:
+		return win32crypt.CryptUnprotectData(x, None, None, None, 0)[1].decode('utf-8')
+	except win32api.error:
+		return 'Password not decrypted'
+
 
 
 def chrome_time(x):

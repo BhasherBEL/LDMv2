@@ -172,7 +172,7 @@ class Module:
 		:param forceprint: Define if the data want to be print although the internal.config.LOG_TYPE (force)
 		:return: Nothing
 		"""
-		if verbose >= config.VERBOSE_LEVEL:
+		if sorteds and verbose >= config.VERBOSE_LEVEL:
 			if config.LOG_TYPE == 0 or config.LOG_TYPE == 2 or forceprint:
 				if header:
 					print(','.join(header) if isinstance(header, list) or isinstance(header, tuple) else str(header))

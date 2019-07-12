@@ -35,7 +35,7 @@ class WindowsChromiumPassword(ChromiumModule):
 					[data_type.Username, 'username_value'],
 					[data_type.Password, 'password_value', format.win32decrypt],
 				],
-				header=['password', 'url', 'username'],
+				header=['url', 'username', 'password'],
 				db='logins',
 				spe=os.path.split(profile)[1],
 			)
